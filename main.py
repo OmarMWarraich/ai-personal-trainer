@@ -12,7 +12,7 @@ load_dotenv()
 client = openai.OpenAI()
 model = "gpt-4"
 
-#== Create our Assistant ==
+# == Create our Assistant ==
 
 # personal_trainer_assis = client.beta.assistants.create(
 #     name="Personal Trainer",
@@ -25,7 +25,7 @@ assistant_id = os.environ.get("OPENAI_ASSISTANT_ID")
 # print(assistant_id)
 
 
-#=== Thread ===
+# === Thread ===
 
 # thread = client.beta.threads.create(
 #     messages=[
@@ -56,6 +56,7 @@ run = client.beta.threads.runs.create(
     instructions="Please address the user as John Doe"
 )
 
+
 def wait_for_run_completion(client, thread_id, run_id, sleep_interval=5):
     """
 
@@ -66,7 +67,8 @@ def wait_for_run_completion(client, thread_id, run_id, sleep_interval=5):
     """
     while True:
         try:
-            run = client.beta.threads.runs.retrieve(thread_id=thread_id, run_id=run_id)
+            run = client.beta.threads.runs.retrieve(
+                thread_id=thread_id, run_id=run_id)
             if run.completed_at:
                 elapsed_time = run.completed_at - run.created_at
                 formatted_elapsed_time = time.strftime(
@@ -75,7 +77,8 @@ def wait_for_run_completion(client, thread_id, run_id, sleep_interval=5):
                 print(f"Run completed in {formatted_elapsed_time}")
                 logging.info(f"Run completed in {formatted_elapsed_time}")
                 # Get messages here once Run is completed!
-                messages = client.beta.threads.messages.list(thread_id=thread_id)
+                messages = client.beta.threads.messages.list(
+                    thread_id=thread_id)
                 last_message = messages.data[0]
                 response = last_message.content[0].text.value
                 print(f"Assistant Response: {response}")
@@ -91,7 +94,8 @@ def wait_for_run_completion(client, thread_id, run_id, sleep_interval=5):
 wait_for_run_completion(client=client, thread_id=thread_id, run_id=run.id)
 
 # ==== Steps --- Logs ==
-run_steps = client.beta.threads.runs.steps.list(thread_id=thread_id, run_id=run.id)
+run_steps = client.beta.threads.runs.steps.list(
+    thread_id=thread_id, run_id=run.id)
 print(f"Steps---> {run_steps.data[0]}")
 
 """
